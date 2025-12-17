@@ -32,7 +32,7 @@ export default function RootLayout({
         <Header />
 
         <main className="flex flex-col md:flex-row md:h-[calc(100vh-4rem)] overflow-hidden">
-          <div className="w-full md:w-[15%] md:min-w-[200px] md:max-w-[300px] md:h-full md:overflow-y-auto shrink-0">
+          <div className="w-full md:w-[15%] md:min-w-[240px] md:max-w-[300px] md:h-full md:overflow-y-auto shrink-0">
             <Sidebar />
           </div>
 
