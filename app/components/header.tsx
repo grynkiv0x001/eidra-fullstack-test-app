@@ -3,7 +3,7 @@ import logo from '@/app/logo.svg';
 
 export const Header = () => {
   return (
-    <header className="flex justify-between items-center p-4">
+    <header className="flex justify-between items-center p-4 md:p-6">
       <Image
         src={logo}
         alt="Eidra Fullstack Test App"
