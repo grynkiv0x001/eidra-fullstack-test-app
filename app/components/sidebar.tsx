@@ -76,22 +76,15 @@ export const Sidebar = async () => {
             Price Range
           </h4>
 
-          <ul className="flex flex-wrap gap-2">
-            {priceRanges && Array.isArray(priceRanges) && (priceRanges as number[]).length > 0 ? (
-              (priceRanges as number[]).map((range: number) => (
-                <li
-                  key={range}
-                  className="bg-white dark:bg-gray-700 rounded-lg border border-black/10 dark:border-white/10 px-3 py-1.5 text-sm dark:text-gray-100"
-                >
+          {priceRanges && (
+            <ul className="flex flex-wrap gap-2">
+              {priceRanges.map((range: string) => (
+                <li key={range} className="bg-white dark:bg-gray-700 rounded-lg border border-black/10 dark:border-white/10 px-3 py-1.5 text-sm dark:text-gray-100">
                   {range}
                 </li>
-              ))
-            ) : (
-              <li className="bg-white dark:bg-gray-700 rounded-lg border border-black/10 dark:border-white/10 px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400">
-                No price ranges available
-              </li>
-            )}
-          </ul>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </aside>

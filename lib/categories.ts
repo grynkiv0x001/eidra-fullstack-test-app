@@ -1,4 +1,4 @@
-import { ENDPOINTS } from './api';
+import { ENDPOINTS, getFetchHeaders } from './api';
 
 interface Category {
   id: string;
@@ -6,10 +6,11 @@ interface Category {
   image_url: string;
 }
 
-export async function getCategories(): Promise<Category[] | null> {
+export const getCategories = async (): Promise<Category[] | null> => {
   try {
     const response = await fetch(ENDPOINTS.FILTERS, {
       cache: 'no-store',
+      headers: await getFetchHeaders(),
     });
 
     if (!response.ok) {
@@ -23,4 +24,4 @@ export async function getCategories(): Promise<Category[] | null> {
     console.error('Error fetching categories:', error);
     return null;
   }
-}
+};

@@ -1,4 +1,4 @@
-import { ENDPOINTS } from './api';
+import { ENDPOINTS, getFetchHeaders } from './api';
 
 export interface Restaurant {
   id: string;
@@ -10,10 +10,11 @@ export interface Restaurant {
   price_range_id: string;
 }
 
-export async function getRestaurants(): Promise<Restaurant[] | null> {
+export const getRestaurants = async (categoryId?: string): Promise<Restaurant[] | null> => {
   try {
     const response = await fetch(ENDPOINTS.RESTAURANTS, {
       cache: 'no-store',
+      headers: await getFetchHeaders(),
     });
 
     if (!response.ok) {
@@ -21,17 +22,23 @@ export async function getRestaurants(): Promise<Restaurant[] | null> {
     }
 
     const data = await response.json();
+
+    if (categoryId) {
+      data.restaurants = data.restaurants.filter((restaurant: Restaurant) => restaurant.filter_ids.includes(categoryId));
+    }
+
     return data.restaurants;
   } catch (error) {
     console.error('Error fetching restaurants:', error);
     return null;
   }
-}
+};
 
-export async function getRestaurant(id: string): Promise<Restaurant | null> {
+export const getRestaurant = async (id: string): Promise<Restaurant | null> => {
   try {
     const response = await fetch(ENDPOINTS.RESTAURANT(id), {
       cache: 'no-store',
+      headers: await getFetchHeaders(),
     });
 
     if (!response.ok) {
@@ -44,12 +51,13 @@ export async function getRestaurant(id: string): Promise<Restaurant | null> {
     console.error('Error fetching restaurant:', error);
     return null;
   }
-}
+};
 
-export async function getDeliveryTimes(): Promise<number[] | null> {
+export const getDeliveryTimes = async (): Promise<number[] | null> => {
   try {
     const response = await fetch(ENDPOINTS.RESTAURANTS, {
       cache: 'no-store',
+      headers: await getFetchHeaders(),
     });
 
     if (!response.ok) {
@@ -66,15 +74,8 @@ export async function getDeliveryTimes(): Promise<number[] | null> {
     console.error('Error fetching restaurants:', error);
     return null;
   }
-}
+};
 
-export async function getPriceRanges() {
-  try {
-    const response = await fetch(ENDPOINTS.RESTAURANTS, {
-      cache: 'no-store',
-    });
-  } catch (error) {
-    console.error('Error fetching price ranges:', error);
-    return null;
-  }
-}
+export const getPriceRanges = async (): Promise<string[] | null> => {
+  return [];
+};
