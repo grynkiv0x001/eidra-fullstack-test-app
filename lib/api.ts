@@ -21,14 +21,10 @@ export const getFetchHeaders = async (): Promise<HeadersInit> => {
 };
 
 export const ENDPOINTS = {
-  get RESTAURANTS() {
-    return `${getBaseUrl()}/restaurants`;
-  },
-  RESTAURANT: (id: string) => `${getBaseUrl()}/restaurants/${id}`,
-  get FILTERS() {
-    return `${getBaseUrl()}/filter`;
-  },
-  FILTER: (id: string) => `${getBaseUrl()}/filter/${id}`,
-  OPEN: (id: string) => `${getBaseUrl()}/open/${id}`,
-  PRICE_RANGE: (id: string) => `${getBaseUrl()}/price-range/${id}`,
+  RESTAURANTS: 'api/restaurants',
+  RESTAURANT: (id: string) => `api/restaurants/${id}`,
+  FILTERS: 'api/filter',
+  FILTER: (id: string) => `api/filter/${id}`,
+  OPEN: (id: string) => `api/open/${id}`,
+  PRICE_RANGE: (id: string) => `api/price-range/${id}`,
 };
