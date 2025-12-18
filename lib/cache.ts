@@ -3,6 +3,8 @@ interface CacheEntry {
   expiresAt: number;
 }
 
+const DEFAULT_TTL_MINUTES = 7;
+
 class InMemoryCache {
   private cache: Map<string, CacheEntry> = new Map();
   private defaultTTL: number;
@@ -38,4 +40,4 @@ class InMemoryCache {
   }
 }
 
-export const cache = new InMemoryCache(7);
+export const cache = new InMemoryCache(DEFAULT_TTL_MINUTES);

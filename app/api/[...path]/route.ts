@@ -3,17 +3,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cache } from '@/lib/cache';
 import { EXTERNAL_API_BASE_URL } from '@/lib/api';
 
-function getCacheKey(path: string[], searchParams: URLSearchParams): string {
+const getCacheKey = (path: string[], searchParams: URLSearchParams): string => {
   const queryString = searchParams.toString();
   const pathString = path.join('/');
 
   return queryString ? `${pathString}?${queryString}` : pathString;
-}
+};
 
-export async function GET(
+export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
-) {
+) => {
   try {
     const { path } = await params;
     const searchParams = request.nextUrl.searchParams;
@@ -34,14 +34,19 @@ export async function GET(
     const queryString = searchParams.toString();
     const externalUrl = `${EXTERNAL_API_BASE_URL}/${pathString}${queryString ? `?${queryString}` : ''}`;
 
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    
+    const auth = request.headers.get('authorization');
+    const cookie = request.headers.get('cookie');
+    
+    if (auth) headers.authorization = auth;
+    if (cookie) headers.cookie = cookie;
+    
     const response = await fetch(externalUrl, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(request.headers.get('authorization') && {
-          authorization: request.headers.get('authorization')!,
-        }),
-      },
+      headers,
       signal: AbortSignal.timeout(30000),
     });
 
@@ -97,4 +102,4 @@ export async function GET(
       { status: 500 },
     );
   }
-}
+};
