@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { EXTERNAL_BASE_URL } from '@/lib/api';
 import { type Restaurant as IRestaurant } from '@/lib/restaurants';
@@ -7,7 +8,7 @@ export const Restaurant = async ({ restaurant }: { restaurant: IRestaurant }) =>
   const { name, image_url, rating, delivery_time_minutes } = restaurant;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-black/10 dark:border-white/10 p-4 flex flex-col gap-3 h-full">
+    <Link href={`/restaurant/${restaurant.id}`} className="bg-white dark:bg-gray-800 rounded-lg border border-black/10 dark:border-white/10 p-4 flex flex-col gap-3 h-full">
       <div className="flex items-start justify-between gap-3">
         <div className="flex gap-2">
           {rating && (
@@ -38,6 +39,6 @@ export const Restaurant = async ({ restaurant }: { restaurant: IRestaurant }) =>
       <div className="flex flex-col gap-1">
         <h2 className="font-regular text-2xl dark:text-gray-100">{name}</h2>
       </div>
-    </div>
+    </Link>
   );
 };

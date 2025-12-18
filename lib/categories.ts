@@ -1,4 +1,4 @@
-import { ENDPOINTS, getFetchHeaders } from './api';
+import { ENDPOINTS, fetchExternal } from './api';
 
 interface Category {
   id: string;
@@ -8,18 +8,9 @@ interface Category {
 
 export const getCategories = async (): Promise<Category[] | null> => {
   try {
-    const response = await fetch(ENDPOINTS.FILTERS, {
-      cache: 'no-store',
-      headers: await getFetchHeaders(),
-    });
+    const data = await fetchExternal<{ filters: Category[] }>(ENDPOINTS.FILTERS);
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch categories: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    return data.filters as Category[];
+    return data.filters;
   } catch (error) {
     console.error('Error fetching categories:', error);
     return null;

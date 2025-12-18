@@ -1,30 +1,37 @@
-import { cookies, headers } from 'next/headers';
+import { cache } from './cache';
 
 export const EXTERNAL_BASE_URL = 'https://work-test-web-2024-eze6j4scpq-lz.a.run.app';
 export const EXTERNAL_API_BASE_URL = `${EXTERNAL_BASE_URL}/api`;
 
-export const getBaseUrl = (): string => {
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const host = process.env.VERCEL_URL || 'localhost:3000';
-
-  return `${protocol}://${host}/api`;
-};
-
-export const getFetchHeaders = async (): Promise<HeadersInit> => {
-  const cookieStore = await cookies();
-  const headerStore = await headers();
-
-  return {
-    cookie: cookieStore.toString(),
-    authorization: headerStore.get('authorization') ?? '',
-  };
-};
-
 export const ENDPOINTS = {
-  RESTAURANTS: 'api/restaurants',
-  RESTAURANT: (id: string) => `api/restaurants/${id}`,
-  FILTERS: 'api/filter',
-  FILTER: (id: string) => `api/filter/${id}`,
-  OPEN: (id: string) => `api/open/${id}`,
-  PRICE_RANGE: (id: string) => `api/price-range/${id}`,
+  RESTAURANTS: 'restaurants',
+  RESTAURANT: (id: string) => `restaurants/${id}`,
+  FILTERS: 'filter',
+  FILTER: (id: string) => `filter/${id}`,
+  OPEN: (id: string) => `open/${id}`,
+  PRICE_RANGE: (id: string) => `price-range/${id}`,
 };
+
+export async function fetchExternal<T>(path: string): Promise<T> {
+  const cachedData = cache.get<T>(path);
+
+  if (cachedData) {
+    return cachedData;
+  }
+
+  const response = await fetch(`${EXTERNAL_API_BASE_URL}/${path}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`External API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  cache.set(path, data);
+
+  return data;
+}

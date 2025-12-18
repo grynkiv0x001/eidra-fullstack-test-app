@@ -1,4 +1,4 @@
-import { ENDPOINTS, getFetchHeaders } from './api';
+import { ENDPOINTS, fetchExternal } from './api';
 
 export interface Restaurant {
   id: string;
@@ -12,22 +12,16 @@ export interface Restaurant {
 
 export const getRestaurants = async (categoryId?: string): Promise<Restaurant[] | null> => {
   try {
-    const response = await fetch(ENDPOINTS.RESTAURANTS, {
-      cache: 'no-store',
-      headers: await getFetchHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch restaurants: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await fetchExternal<{ restaurants: Restaurant[] }>(ENDPOINTS.RESTAURANTS);
+    let restaurants = data.restaurants;
 
     if (categoryId) {
-      data.restaurants = data.restaurants.filter((restaurant: Restaurant) => restaurant.filter_ids.includes(categoryId));
+      restaurants = restaurants.filter((restaurant: Restaurant) => 
+        restaurant.filter_ids.includes(categoryId),
+      );
     }
 
-    return data.restaurants;
+    return restaurants;
   } catch (error) {
     console.error('Error fetching restaurants:', error);
     return null;
@@ -36,16 +30,7 @@ export const getRestaurants = async (categoryId?: string): Promise<Restaurant[] 
 
 export const getRestaurant = async (id: string): Promise<Restaurant | null> => {
   try {
-    const response = await fetch(ENDPOINTS.RESTAURANT(id), {
-      cache: 'no-store',
-      headers: await getFetchHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch restaurant: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await fetchExternal<Restaurant>(ENDPOINTS.RESTAURANT(id));
     return data;
   } catch (error) {
     console.error('Error fetching restaurant:', error);
@@ -55,16 +40,7 @@ export const getRestaurant = async (id: string): Promise<Restaurant | null> => {
 
 export const getDeliveryTimes = async (): Promise<number[] | null> => {
   try {
-    const response = await fetch(ENDPOINTS.RESTAURANTS, {
-      cache: 'no-store',
-      headers: await getFetchHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch restaurants: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await fetchExternal<{ restaurants: Restaurant[] }>(ENDPOINTS.RESTAURANTS);
 
     const deliveryTimes = data.restaurants.map((item: Restaurant) => item.delivery_time_minutes);
     const uniqueDeliveryTimesSet = new Set<number>(deliveryTimes);
